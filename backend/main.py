@@ -44,12 +44,12 @@ def success():
 		file_copy = f"{os.path.splitext(f.filename)[0]}_copy{os.path.splitext(f.filename)[1]}"
 		shutil.copy2(os.path.realpath(f.filename), os.path.realpath(file_copy))
 		os.remove(f.filename)
-		print(final)
+		# print(final)
 		return jsonify(success=True, message=f"Script ran successfully")
 
 @app.route('/get_inputs', methods = ['POST'])
 @cross_origin()
-def run():
+def get_inputs():
 	script = request.get_json(force=True)
 	script = script["filename"]
 	print(script)
@@ -67,12 +67,12 @@ def run():
 			return jsonify(success=False, message=f"Error running script: {e}")
 		
 @app.route('/run', methods = ['POST'])
-@cross_origin
+@cross_origin()
 def run():
 	script = request.get_json(force=True)
 	filename = script["filename"]
-	input_string = script['input_data']
-	if os.path.isfile(script):
+	input_string = script['inputData']
+	if os.path.isfile(filename):
 		try: 
 			subprocess.run(["python", filename], input=input_string, shell=True, text=True, check=True)
 			return jsonify(success=True, message=f"Script ran successfully")
